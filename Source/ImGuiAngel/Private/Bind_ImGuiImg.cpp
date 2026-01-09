@@ -54,7 +54,7 @@ namespace ImGuiImageWrappers
         if (GImGuiTextureNameCache.RemoveAndCopyValue(TextureID, Name))
         {
             // 确保模块仍然加载
-            if (FModuleManager::Get().IsModuleLoaded("ImGui"))
+            if (FModuleManager::Get().IsModuleLoaded("ImGuiImg"))
             {
                 FImGuiModule& Module = FImGuiModule::Get();
                 

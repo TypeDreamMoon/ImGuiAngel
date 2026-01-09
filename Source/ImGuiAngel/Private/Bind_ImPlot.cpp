@@ -5,6 +5,12 @@
 // 引入 ImPlot
 #include "implot.h"
 
+// 定义不透明句柄，用于在 AngelScript 安全传递 ImPlotContext* 指针
+struct FImPlotContextHandle
+{
+    ImPlotContext* Ptr;
+};
+
 namespace ImPlotWrappers
 {
     // =========================================================================================
@@ -22,10 +28,10 @@ namespace ImPlotWrappers
     // =========================================================================================
 
     // --- Context ---
-    static ImPlotContext* CreateContext() { return ImPlot::CreateContext(); }
-    static void DestroyContext(ImPlotContext* Context) { ImPlot::DestroyContext(Context); }
-    static ImPlotContext* GetCurrentContext() { return ImPlot::GetCurrentContext(); }
-    static void SetCurrentContext(ImPlotContext* Context) { ImPlot::SetCurrentContext(Context); }
+    static FImPlotContextHandle CreateContext() { return { ImPlot::CreateContext() }; }
+    static void DestroyContext(FImPlotContextHandle Context) { ImPlot::DestroyContext(Context.Ptr); }
+    static FImPlotContextHandle GetCurrentContext() { return { ImPlot::GetCurrentContext() }; }
+    static void SetCurrentContext(FImPlotContextHandle Context) { ImPlot::SetCurrentContext(Context.Ptr); }
 
     // --- Demo ---
     static void ShowDemoWindow(bool& bIsOpen) { ImPlot::ShowDemoWindow(&bIsOpen); }
@@ -160,6 +166,9 @@ namespace ImPlotWrappers
 static void RegisterImPlotBinds()
 {
     FAngelscriptBinds::FNamespace Namespace("ImPlot");
+
+    // --- 注册句柄类型 ---
+    FAngelscriptBinds::ValueClass<FImPlotContextHandle>("ImPlotContextHandle", FBindFlags{.bPOD = true});
 
     // ================== ENUMS ==================
     
@@ -298,10 +307,10 @@ static void RegisterImPlotBinds()
     // ================== FUNCTIONS ==================
 
     // Context
-    FAngelscriptBinds::BindGlobalFunction("ImPlotContext CreateContext()", FUNC_TRIVIAL(ImPlotWrappers::CreateContext));
-    FAngelscriptBinds::BindGlobalFunction("void DestroyContext(ImPlotContext Context = nullptr)", FUNC_TRIVIAL(ImPlotWrappers::DestroyContext));
-    FAngelscriptBinds::BindGlobalFunction("ImPlotContext GetCurrentContext()", FUNC_TRIVIAL(ImPlotWrappers::GetCurrentContext));
-    FAngelscriptBinds::BindGlobalFunction("void SetCurrentContext(ImPlotContext Context)", FUNC_TRIVIAL(ImPlotWrappers::SetCurrentContext));
+    FAngelscriptBinds::BindGlobalFunction("ImPlotContextHandle CreateContext()", FUNC_TRIVIAL(ImPlotWrappers::CreateContext));
+    FAngelscriptBinds::BindGlobalFunction("void DestroyContext(ImPlotContextHandle Context)", FUNC_TRIVIAL(ImPlotWrappers::DestroyContext));
+    FAngelscriptBinds::BindGlobalFunction("ImPlotContextHandle GetCurrentContext()", FUNC_TRIVIAL(ImPlotWrappers::GetCurrentContext));
+    FAngelscriptBinds::BindGlobalFunction("void SetCurrentContext(ImPlotContextHandle Context)", FUNC_TRIVIAL(ImPlotWrappers::SetCurrentContext));
 
     // Demo
     FAngelscriptBinds::BindGlobalFunction("void ShowDemoWindow(bool& bIsOpen)", FUNC_TRIVIAL(ImPlotWrappers::ShowDemoWindow));
@@ -318,35 +327,35 @@ static void RegisterImPlotBinds()
     FAngelscriptBinds::BindGlobalFunction("void SetupAxis(int Axis, FString Label = \"\", int Flags = 0)", FUNC_TRIVIAL(ImPlotWrappers::SetupAxis));
     FAngelscriptBinds::BindGlobalFunction("void SetupAxes(FString XLabel, FString YLabel, int XFlags = 0, int YFlags = 0)", FUNC_TRIVIAL(ImPlotWrappers::SetupAxes));
     FAngelscriptBinds::BindGlobalFunction("void SetupLegend(int Location, int Flags = 0)", FUNC_TRIVIAL(ImPlotWrappers::SetupLegend));
-    FAngelscriptBinds::BindGlobalFunction("void SetupAxisLimits(int Axis, float Min, float Max, int Cond = 0)", FUNC_TRIVIAL(ImPlotWrappers::SetupAxisLimits));
-    FAngelscriptBinds::BindGlobalFunction("void SetupAxesLimits(float XMin, float XMax, float YMin, float YMax, int Cond = 0)", FUNC_TRIVIAL(ImPlotWrappers::SetupAxesLimits));
+    FAngelscriptBinds::BindGlobalFunction("void SetupAxisLimits(int Axis, float32 Min, float32 Max, int Cond = 0)", FUNC_TRIVIAL(ImPlotWrappers::SetupAxisLimits));
+    FAngelscriptBinds::BindGlobalFunction("void SetupAxesLimits(float32 XMin, float32 XMax, float32 YMin, float32 YMax, int Cond = 0)", FUNC_TRIVIAL(ImPlotWrappers::SetupAxesLimits));
     FAngelscriptBinds::BindGlobalFunction("void SetupFinish()", FUNC_TRIVIAL(ImPlotWrappers::SetupFinish));
 
     // SetNext
-    FAngelscriptBinds::BindGlobalFunction("void SetNextAxisLimits(int Axis, float Min, float Max, int Cond = 0)", FUNC_TRIVIAL(ImPlotWrappers::SetNextAxisLimits));
+    FAngelscriptBinds::BindGlobalFunction("void SetNextAxisLimits(int Axis, float32 Min, float32 Max, int Cond = 0)", FUNC_TRIVIAL(ImPlotWrappers::SetNextAxisLimits));
     FAngelscriptBinds::BindGlobalFunction("void SetNextAxisToFit(int Axis)", FUNC_TRIVIAL(ImPlotWrappers::SetNextAxisToFit));
     FAngelscriptBinds::BindGlobalFunction("void SetNextAxesToFit()", FUNC_TRIVIAL(ImPlotWrappers::SetNextAxesToFit));
 
     // Plot Items
-    FAngelscriptBinds::BindGlobalFunction("void PlotLine(FString Label, const TArray<float>& Values, float XScale = 1.0f, float XStart = 0.0f, int Flags = 0)", FUNC_TRIVIAL(ImPlotWrappers::PlotLine));
-    FAngelscriptBinds::BindGlobalFunction("void PlotLine(FString Label, const TArray<float>& Xs, const TArray<float>& Ys, int Flags = 0)", FUNC_TRIVIAL(ImPlotWrappers::PlotLineXY));
+    FAngelscriptBinds::BindGlobalFunction("void PlotLine(FString Label, const TArray<float32>& Values, float32 XScale = 1.0f, float32 XStart = 0.0f, int Flags = 0)", FUNC_TRIVIAL(ImPlotWrappers::PlotLine));
+    FAngelscriptBinds::BindGlobalFunction("void PlotLine(FString Label, const TArray<float32>& Xs, const TArray<float32>& Ys, int Flags = 0)", FUNC_TRIVIAL(ImPlotWrappers::PlotLineXY));
     
-    FAngelscriptBinds::BindGlobalFunction("void PlotScatter(FString Label, const TArray<float>& Values, float XScale = 1.0f, float XStart = 0.0f, int Flags = 0)", FUNC_TRIVIAL(ImPlotWrappers::PlotScatter));
-    FAngelscriptBinds::BindGlobalFunction("void PlotScatter(FString Label, const TArray<float>& Xs, const TArray<float>& Ys, int Flags = 0)", FUNC_TRIVIAL(ImPlotWrappers::PlotScatterXY));
+    FAngelscriptBinds::BindGlobalFunction("void PlotScatter(FString Label, const TArray<float32>& Values, float32 XScale = 1.0f, float32 XStart = 0.0f, int Flags = 0)", FUNC_TRIVIAL(ImPlotWrappers::PlotScatter));
+    FAngelscriptBinds::BindGlobalFunction("void PlotScatter(FString Label, const TArray<float32>& Xs, const TArray<float32>& Ys, int Flags = 0)", FUNC_TRIVIAL(ImPlotWrappers::PlotScatterXY));
 
-    FAngelscriptBinds::BindGlobalFunction("void PlotBars(FString Label, const TArray<float>& Values, float BarSize = 0.67f, float Shift = 0.0f, int Flags = 0)", FUNC_TRIVIAL(ImPlotWrappers::PlotBars));
-    FAngelscriptBinds::BindGlobalFunction("void PlotBars(FString Label, const TArray<float>& Xs, const TArray<float>& Ys, float BarSize = 0.67f, int Flags = 0)", FUNC_TRIVIAL(ImPlotWrappers::PlotBarsXY));
+    FAngelscriptBinds::BindGlobalFunction("void PlotBars(FString Label, const TArray<float32>& Values, float32 BarSize = 0.67f, float32 Shift = 0.0f, int Flags = 0)", FUNC_TRIVIAL(ImPlotWrappers::PlotBars));
+    FAngelscriptBinds::BindGlobalFunction("void PlotBars(FString Label, const TArray<float32>& Xs, const TArray<float32>& Ys, float32 BarSize = 0.67f, int Flags = 0)", FUNC_TRIVIAL(ImPlotWrappers::PlotBarsXY));
 
-    FAngelscriptBinds::BindGlobalFunction("void PlotStairs(FString Label, const TArray<float>& Values, float XScale = 1.0f, float XStart = 0.0f, int Flags = 0)", FUNC_TRIVIAL(ImPlotWrappers::PlotStairs));
-    FAngelscriptBinds::BindGlobalFunction("void PlotShaded(FString Label, const TArray<float>& Xs, const TArray<float>& Ys, float YRef = 0.0f, int Flags = 0)", FUNC_TRIVIAL(ImPlotWrappers::PlotShaded));
+    FAngelscriptBinds::BindGlobalFunction("void PlotStairs(FString Label, const TArray<float32>& Values, float32 XScale = 1.0f, float32 XStart = 0.0f, int Flags = 0)", FUNC_TRIVIAL(ImPlotWrappers::PlotStairs));
+    FAngelscriptBinds::BindGlobalFunction("void PlotShaded(FString Label, const TArray<float32>& Xs, const TArray<float32>& Ys, float32 YRef = 0.0f, int Flags = 0)", FUNC_TRIVIAL(ImPlotWrappers::PlotShaded));
 
-    FAngelscriptBinds::BindGlobalFunction("void PlotText(FString Text, float X, float Y, FVector2D PixOffset = FVector2D(0,0), int Flags = 0)", FUNC_TRIVIAL(ImPlotWrappers::PlotText));
+    FAngelscriptBinds::BindGlobalFunction("void PlotText(FString Text, float32 X, float32 Y, FVector2D PixOffset = FVector2D(0,0), int Flags = 0)", FUNC_TRIVIAL(ImPlotWrappers::PlotText));
 
     // Styling
     FAngelscriptBinds::BindGlobalFunction("void PushStyleColor(int Idx, FLinearColor Color)", FUNC_TRIVIAL(ImPlotWrappers::PushStyleColor));
     FAngelscriptBinds::BindGlobalFunction("void PopStyleColor(int Count = 1)", FUNC_TRIVIAL(ImPlotWrappers::PopStyleColor));
     
-    FAngelscriptBinds::BindGlobalFunction("void PushStyleVar(int Idx, float Val)", FUNC_TRIVIAL(ImPlotWrappers::PushStyleVarFloat));
+    FAngelscriptBinds::BindGlobalFunction("void PushStyleVar(int Idx, float32 Val)", FUNC_TRIVIAL(ImPlotWrappers::PushStyleVarFloat));
     FAngelscriptBinds::BindGlobalFunction("void PushStyleVar(int Idx, int Val)", FUNC_TRIVIAL(ImPlotWrappers::PushStyleVarInt));
     FAngelscriptBinds::BindGlobalFunction("void PushStyleVar(int Idx, FVector2D Val)", FUNC_TRIVIAL(ImPlotWrappers::PushStyleVarVec2));
     FAngelscriptBinds::BindGlobalFunction("void PopStyleVar(int Count = 1)", FUNC_TRIVIAL(ImPlotWrappers::PopStyleVar));
