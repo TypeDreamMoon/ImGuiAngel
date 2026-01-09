@@ -563,7 +563,6 @@ static void RegisterImGuiBinds()
 	FAngelscriptBinds::BindGlobalFunction("void ShowUserGuide()", FUNC_TRIVIAL(ImGuiWrappers::ShowUserGuide));
 
 	// Misc
-	FAngelscriptBinds::BindGlobalFunction("void SameLine()", FUNC_TRIVIAL(ImGui::SameLine));
 }
 
 // 静态注册
