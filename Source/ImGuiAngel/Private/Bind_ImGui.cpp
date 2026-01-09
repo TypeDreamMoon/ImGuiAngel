@@ -387,16 +387,16 @@ static void RegisterImGuiBinds()
     FAngelscriptBinds::BindGlobalFunction("bool Selectable(FString Label, bool& bSelected, int Flags = 0, FVector2D Size = FVector2D(0,0))", FUNC_TRIVIAL(ImGuiWrappers::SelectableRef));
 
     // Drags
-    FAngelscriptBinds::BindGlobalFunction("bool DragFloat(FString Label, float32& V, float Speed = 1.0f, float Min = 0.0f, float Max = 0.0f, FString Format = \"%.3f\", int Flags = 0)", FUNC_TRIVIAL(ImGuiWrappers::DragFloat));
+    FAngelscriptBinds::BindGlobalFunction("bool DragFloat(FString Label, float32& V, float Speed = 1.0f, float Min = 0.0f, float Max = 0.0f, FString Format, int Flags = 0)", FUNC_TRIVIAL(ImGuiWrappers::DragFloat));
     FAngelscriptBinds::BindGlobalFunction("bool DragFloat(FString Label, float32& V, float Speed, float Min, float Max)", FUNC_TRIVIAL(ImGuiWrappers::DragFloat_Simple));
 
-    FAngelscriptBinds::BindGlobalFunction("bool DragFloat2(FString Label, FVector2D& V, float Speed = 1.0f, float Min = 0.0f, float Max = 0.0f, FString Format = \"%.3f\", int Flags = 0)", FUNC_TRIVIAL(ImGuiWrappers::DragFloat2));
+    FAngelscriptBinds::BindGlobalFunction("bool DragFloat2(FString Label, FVector2D& V, float Speed = 1.0f, float Min = 0.0f, float Max = 0.0f, FString Format, int Flags = 0)", FUNC_TRIVIAL(ImGuiWrappers::DragFloat2));
     FAngelscriptBinds::BindGlobalFunction("bool DragFloat2(FString Label, FVector2D& V, float Speed, float Min, float Max)", FUNC_TRIVIAL(ImGuiWrappers::DragFloat2_Simple));
 
-    FAngelscriptBinds::BindGlobalFunction("bool DragFloat3(FString Label, FVector& V, float Speed = 1.0f, float Min = 0.0f, float Max = 0.0f, FString Format = \"%.3f\", int Flags = 0)", FUNC_TRIVIAL(ImGuiWrappers::DragFloat3));
+    FAngelscriptBinds::BindGlobalFunction("bool DragFloat3(FString Label, FVector& V, float Speed = 1.0f, float Min = 0.0f, float Max = 0.0f, FString Format, int Flags = 0)", FUNC_TRIVIAL(ImGuiWrappers::DragFloat3));
     FAngelscriptBinds::BindGlobalFunction("bool DragFloat3(FString Label, FVector& V, float Speed, float Min, float Max)", FUNC_TRIVIAL(ImGuiWrappers::DragFloat3_Simple));
 
-    FAngelscriptBinds::BindGlobalFunction("bool DragInt(FString Label, int32& V, float Speed = 1.0f, int Min = 0, int Max = 0, FString Format = \"%d\", int Flags = 0)", FUNC_TRIVIAL(ImGuiWrappers::DragInt));
+    FAngelscriptBinds::BindGlobalFunction("bool DragInt(FString Label, int32& V, float Speed = 1.0f, int Min = 0, int Max = 0, FString Format, int Flags = 0)", FUNC_TRIVIAL(ImGuiWrappers::DragInt));
     FAngelscriptBinds::BindGlobalFunction("bool DragInt(FString Label, int32& V, float Speed, int Min, int Max)", FUNC_TRIVIAL(ImGuiWrappers::DragInt_Simple));
 
     // Sliders
@@ -420,7 +420,7 @@ static void RegisterImGuiBinds()
     FAngelscriptBinds::BindGlobalFunction("bool InputText(FString Label, FString& Text, int BufferSize = 256, int Flags = 0)", FUNC_TRIVIAL(ImGuiWrappers::InputText));
     FAngelscriptBinds::BindGlobalFunction("bool InputTextMultiline(FString Label, FString& Text, FVector2D Size = FVector2D(0,0), int BufferSize = 1024, int Flags = 0)", FUNC_TRIVIAL(ImGuiWrappers::InputTextMultiline));
     
-    FAngelscriptBinds::BindGlobalFunction("bool InputFloat(FString Label, float32& V, float Step = 0.0f, float StepFast = 0.0f, FString Format = \"%.3f\", int Flags = 0)", FUNC_TRIVIAL(ImGuiWrappers::InputFloat));
+    FAngelscriptBinds::BindGlobalFunction("bool InputFloat(FString Label, float32& V, float Step = 0.0f, float StepFast = 0.0f, FString Format, int Flags = 0)", FUNC_TRIVIAL(ImGuiWrappers::InputFloat));
     FAngelscriptBinds::BindGlobalFunction("bool InputFloat(FString Label, float32& V, float Step, float StepFast)", FUNC_TRIVIAL(ImGuiWrappers::InputFloat_Simple));
 
     FAngelscriptBinds::BindGlobalFunction("bool InputInt(FString Label, int32& V, int Step = 1, int StepFast = 100, int Flags = 0)", FUNC_TRIVIAL(ImGuiWrappers::InputInt));
@@ -501,6 +501,9 @@ static void RegisterImGuiBinds()
     // Demo
     FAngelscriptBinds::BindGlobalFunction("void ShowDemoWindow(bool& bShow)", FUNC_TRIVIAL(ImGuiWrappers::ShowDemoWindow));
     FAngelscriptBinds::BindGlobalFunction("void ShowUserGuide()", FUNC_TRIVIAL(ImGuiWrappers::ShowUserGuide));
+    
+    // Misc
+    FAngelscriptBinds::BindGlobalFunction("void SameLine()", FUNC_TRIVIAL(ImGui::SameLine));
 }
 
 // 静态注册
